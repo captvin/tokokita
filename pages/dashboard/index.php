@@ -1,4 +1,13 @@
 <?php
+session_start();
+if (empty($_SESSION['login'])) {
+    header("Location: ../login/index.php");
+    exit();
+}
+
+// var_dump($_SESSION['login']['role']);
+// exit();
+
 include_once $_SERVER["DOCUMENT_ROOT"] . "/tokokita1/api/summary.php";
 $summary = new summary('kasir');
 $transactionData = $summary->getTransaction();
@@ -55,14 +64,33 @@ $product = $summary->bestProduct();
                 <?php
                 include_once $_SERVER["DOCUMENT_ROOT"] . "/tokokita1/components/navbar.php";
                 ?>
+                <!-- Begin age content kasir -->
+                <div class="container-fluid <?= $_SESSION['login']['role'] == 'Kasir' ? '' : 'd-none' ?>">
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                    </div>
 
-                <!-- Begin Page Content -->
-                <div class="container-fluid">
+                    <div class="row d-flex justify-content-center align-items-center ">
+                        <div class="d-block justify-content-center align-items-center">
+                            
+                            <div>
+                            <h1 id="realtimeClock"></h1>
+                            </div>
+                            
+                            <div>
+                            <button class="btn btn-primary">Penjualan</button>
+                            <button class="btn btn-success">Pembelian</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Begin Page Content Admin dan Manager -->
+                <div class="container-fluid <?= $_SESSION['login']['role']  == 'Kasir' ? 'd-none' : '' ?>">
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
                     </div>
 
                     <!-- Content Row -->
@@ -182,7 +210,7 @@ $product = $summary->bestProduct();
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Top Sales</h6>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
@@ -220,24 +248,9 @@ $product = $summary->bestProduct();
         <i class="fas fa-angle-up"></i>
     </a>
 
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
-                </div>
-            </div>
-        </div>
-    </div>
+    <?php
+    include_once $_SERVER["DOCUMENT_ROOT"] . "/tokokita1/components/logoutModal.php";
+    ?>
 
     <!-- Bootstrap core JavaScript-->
     <script src="../../vendors/jquery/jquery.min.js"></script>
@@ -261,6 +274,25 @@ $product = $summary->bestProduct();
             var titik = document.getElementById(`colorProduct[${i}]`);
             titik.style.color = productColors[i]
         }
+
+        function padZero(number) {
+            return number < 10 ? "0" + number : number;
+        }
+
+        function updateClock() {
+            var now = new Date();
+            var hours = now.getHours();
+            var minutes = now.getMinutes();
+            var seconds = now.getSeconds();
+
+            // Format jam seperti "HH:mm:ss"
+            var formattedTime = padZero(hours) + ":" + padZero(minutes) + ":" + padZero(seconds);
+
+            // Tampilkan waktu pada elemen dengan id "realtime-clock"
+            document.getElementById("realtimeClock").innerText = formattedTime;
+        }
+
+        setInterval(updateClock, 1000);
     </script>
 
     <script>

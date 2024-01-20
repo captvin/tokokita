@@ -25,6 +25,12 @@
             <span>User</span></a>
     </li>
 
+    <li class="nav-item active">
+        <a class="nav-link" href="../barang/">
+            <i class="fas fa-fw fa-cubes"></i>
+            <span>Barang</span></a>
+    </li>
+
     <!-- Divider -->
     <hr class="sidebar-divider">
 

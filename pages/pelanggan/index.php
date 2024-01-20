@@ -1,22 +1,14 @@
 <?php
-session_start();
-// header('Content-Type: application/json');
-include_once $_SERVER["DOCUMENT_ROOT"] . "/tokokita1/api/user.php";
-include_once $_SERVER["DOCUMENT_ROOT"] . "/tokokita1/api/role.php";
-$user = new user('kasir');
-$userData = $user->getAll();
-
-// $reqData = json_decode(file_get_contents("php://input"), true);
-
-// print_r($reqData);
-// exit();
+include_once $_SERVER["DOCUMENT_ROOT"] . "/tokokita1/api/barang.php";
+$barang = new barang('kasir');
+$barangData = $barang->getAll();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST['action']) == 'getById' && isset($_POST['userId'])) {
-        $userOne = $user->getById($_POST['userId']);
-        if ($userOne) {
+    if ($_POST['action'] == 'getById' && isset($_POST['userId'])) {
+        $dataOne = $user->getById($_POST['userId']);
+        if ($dataOne) {
             header('Content-Type: application/json');
-            echo json_encode(array("success" => true, "user" => $userOne));
+            echo json_encode(array("success" => true, "data" => $dataOne));
             exit();
         } else {
             http_response_code(500);
@@ -77,9 +69,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 <div class="container-fluid">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">User</h1>
+                        <h1 class="h3 mb-0 text-gray-800">Barang</h1>
                         <a href="#" class="btn btn-success" data-toggle="modal" data-target="#addUserModal">
-                            <i class="fas fa-user-plus"></i> Tambah User
+                            <i class="fas fa-user-plus"></i> Tambah Barang
                         </a>
                     </div>
                     <div class="card shadow mb-4">
@@ -88,26 +80,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>Username</th>
-                                            <th>First Name</th>
-                                            <th>Last Name</th>
-                                            <th>Role</th>
-                                            <th>Phone</th>
-                                            <th>Address</th>
+                                            <th>Nama</th>
+                                            <th>Keterangan</th>
+                                            <th>Satuan</th>
+                                            <th>Stok</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        foreach ($userData as $data) {
+                                        foreach ($barangData as $row) {
                                         ?>
                                             <tr>
-                                                <td><?= $data['username'] ?></td>
-                                                <td><?= $data['firstName'] ?></td>
-                                                <td><?= $data['lastName'] ?></td>
-                                                <td><?= $data['role'] ?></td>
-                                                <td><?= $data['phone'] ?></td>
-                                                <td><?= $data['address'] ?></td>
+                                                <td><?= $row['NamaBarang'] ?></td>
+                                                <td><?= $row['Keterangan'] ?></td>
+                                                <td><?= $row['Satuan'] ?></td>
+                                                <td><?= $row['stok'] ?></td>
                                                 <td>
                                                     <a href="#" class="btn btn-primary btn-sm edit-user-btn" data-toggle="modal" data-target="#editUserModal" data-userid="<?= $data['IdPengguna'] ?>">
                                                         <i class="fas fa-edit"></i>
@@ -399,7 +387,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     // Menggunakan AJAX untuk memanggil API delete dengan metode POST
                     $.ajax({
                         type: "POST",
-                        url: "index.php",
+                        url: "./index.php",
                         data: {
                             userId: userId
                         }, // Ubah 'id' menjadi 'userId'

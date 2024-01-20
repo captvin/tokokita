@@ -1,21 +1,24 @@
 <?php
+session_start();
 include_once $_SERVER["DOCUMENT_ROOT"] . "/tokokita1/db/mysql33.php";
 include_once $_SERVER["DOCUMENT_ROOT"] . "/tokokita1/middleware/ability.php";
-class barang{
+class role{
     private $mysql_conn;
-    private $userRole;
+    private $userRole = $_SESSION['login']['role'];
 
-    public function __construct($userRole = null)
+    public function __construct()
     {
         global $mysql_conn;
         $this->mysql_conn = $mysql_conn;
-        $this->userRole = $userRole ?: 'default';
     }
 
     public function getAll(){
-        $query = "SELECT b.IdBarang, b.NamaBarang, b.Keterangan, b.Satuan, (SUM(p.JumlahPembelian)-SUM(pj.JumlahPenjualan)) AS stok 
-        FROM barang b LEFT JOIN pembelian p ON b.IdBarang = p.IdBarang LEFT JOIN penjualan pj ON b.IdBarang = pj.IdBarang 
-        GROUP BY b.IdBarang ";
+        // if(ability::hasAccess($this->userRole, 'getBarang')){
+
+        // }else{
+        //     return false;
+        // }
+        $query = "SELECT * FROM hakakses";
 
         $result = $this->mysql_conn->query($query);
 
@@ -23,7 +26,7 @@ class barang{
     }
 
     public function getById($id){
-        $query = "SELECT b.IdBarang, b.NamaBarang AS nama, b.Keterangan AS keterangan, b.Satuan AS satuan, (SUM(p.JumlahPembelian)-SUM(pj.JumlahPenjualan)) AS stok 
+        $query = "SELECT b.IdBarang, b.NamaBarang, b.Keterangan, b.Satuan, (SUM(p.JumlahPembelian)-SUM(pj.JumlahPenjualan)) AS stok 
         FROM barang b LEFT JOIN pembelian p ON b.IdBarang = p.IdBarang LEFT JOIN penjualan pj ON b.IdBarang = pj.IdBarang
         WHERE b.IdBarang = $id
         GROUP BY b.IdBarang ";
@@ -40,9 +43,9 @@ class barang{
             return false;
         }
 
-        $nama = $this->mysql_conn->real_escape_string($data['nama']);
-        $keterangan = $this->mysql_conn->real_escape_string($data['keterangan']);
-        $satuan = $this->mysql_conn->real_escape_string($data['satuan']);
+        $nama = $this->mysql_conn->real_escape_string($data['NamaBarang']);
+        $keterangan = $this->mysql_conn->real_escape_string($data['Keterangan']);
+        $satuan = $this->mysql_conn->real_escape_string($data['Satuan']);
 
         $query = "INSERT INTO barang (NamaBarang, Keterangan, Satuan) VALUES ('$nama', '$keterangan', '$satuan')";
         $result = $this->mysql_conn->query($query);
@@ -51,9 +54,9 @@ class barang{
     }
 
     public function update($id, $data){
-        $nama = $this->mysql_conn->real_escape_string($data['nama']);
-        $keterangan = $this->mysql_conn->real_escape_string($data['keterangan']);
-        $satuan = $this->mysql_conn->real_escape_string($data['satuan']);
+        $nama = $this->mysql_conn->real_escape_string($data['NamaBarang']);
+        $keterangan = $this->mysql_conn->real_escape_string($data['Keterangan']);
+        $satuan = $this->mysql_conn->real_escape_string($data['Satuan']);
         $query = "UPDATE barang SET NamaBarang = '$nama', Keterangan = '$keterangan', Satuan = '$satuan' WHERE IdBarang = $id";
         $result = $this->mysql_conn->query($query);
 

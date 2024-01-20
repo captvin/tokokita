@@ -26,10 +26,10 @@ class user
 
     public function getById($id)
     {
-        $query = "SELECT p.IdPengguna, p.NamaPengguna AS username, p.NamaDepan AS firstName, p.NamaBelakang AS lastName, p.NoHp AS phone, p.Alamat AS address, h.NamaAkses as role 
+        $query = "SELECT p.IdPengguna, p.NamaPengguna AS username, p.NamaDepan AS firstName, p.NamaBelakang AS lastName, p.NoHp AS phone, p.Alamat AS address, h.NamaAkses AS role, h.IdHakAkses AS idAkses
         FROM pengguna p LEFT JOIN hakakses h ON p.IdAkses = h.IdHakAkses
         WHERE p.IdPengguna = $id
-        ORDER BY p.NamaPengguna ";
+        ORDER BY p.NamaPengguna";
 
         $result = $this->mysql_conn->query($query);
 
@@ -38,17 +38,17 @@ class user
 
     public function create($data)
     {
-        if (ability::hasAccess($this->userRole, 'createBarang')) {
-        } else {
-            return false;
-        }
+        // if (ability::hasAccess($this->userRole, 'createBarang')) {
+        // } else {
+        //     return false;
+        // }
 
-        $nama = $this->mysql_conn->real_escape_string($data['NamaPengguna']);
-        $password = $this->mysql_conn->real_escape_string($data['Password']);
-        $first = $this->mysql_conn->real_escape_string($data['NamaDepan']);
-        $last = $this->mysql_conn->real_escape_string($data['NamaBelakang']);
-        $phone = $this->mysql_conn->real_escape_string($data['Phone']);
-        $address = $this->mysql_conn->real_escape_string($data['Address']);
+        $nama = $this->mysql_conn->real_escape_string($data['username']);
+        $password = $this->mysql_conn->real_escape_string($data['password']);
+        $first = $this->mysql_conn->real_escape_string($data['first']);
+        $last = $this->mysql_conn->real_escape_string($data['last']);
+        $phone = $this->mysql_conn->real_escape_string($data['phone']);
+        $address = $this->mysql_conn->real_escape_string($data['address']);
         $role = (int)$data['role'];
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
@@ -70,18 +70,17 @@ class user
                 return $result ? true : false;
             }
         } else {
-            // Query untuk mengecek NamaPengguna gagal
             return false;
         }
     }
 
     public function update($id, $data)
     {
-        $nama = $this->mysql_conn->real_escape_string($data['NamaPengguna']);
-        $first = $this->mysql_conn->real_escape_string($data['NamaDepan']);
-        $last = $this->mysql_conn->real_escape_string($data['NamaBelakang']);
-        $phone = $this->mysql_conn->real_escape_string($data['Phone']);
-        $address = $this->mysql_conn->real_escape_string($data['Address']);
+        $nama = $this->mysql_conn->real_escape_string($data['username']);
+        $first = $this->mysql_conn->real_escape_string($data['first']);
+        $last = $this->mysql_conn->real_escape_string($data['last']);
+        $phone = $this->mysql_conn->real_escape_string($data['phone']);
+        $address = $this->mysql_conn->real_escape_string($data['address']);
         $role = (int)$data['role'];
 
         $checkQuery = "SELECT COUNT(*) AS count FROM pengguna WHERE NamaPengguna = '$nama' AND idPengguna != $id";
@@ -140,12 +139,39 @@ class user
 
     public function login($username, $password)
     {
+        if (empty($username) || empty($password)) {
+            return false; // Parameter tidak valid
+        }
+    
+        // Menggunakan prepared statement untuk mencegah SQL Injection
+        $stmt = $this->mysql_conn->prepare("SELECT * FROM pengguna p INNER JOIN hakakses h ON p.IdAkses = h.IdHakAkses WHERE NamaPengguna = ?");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        if ($result->num_rows > 0) {
+            $userData = $result->fetch_assoc();
+            print_r($userData);
+    
+            if (password_verify($password, $userData['Password'])) {
+                // Set session jika login berhasil
+                session_start();
+                $_SESSION['login']['user_id'] = $userData['IdPengguna'];
+                $_SESSION['login']['username'] = $userData['NamaPengguna'];
+                $_SESSION['login']['role'] = $userData['NamaAkses'];
+                return true; // Login berhasil
+            }
+        }
+    
+        return false; // Login gagal
+    
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         $query = "DELETE FROM pengguna WHERE IdPengguna = $id";
         $result = $this->mysql_conn->query($query);
 
-        return $result ? true : false ;
+        return $result ? true : false;
     }
 }

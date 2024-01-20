@@ -12,7 +12,9 @@ class ability
     private static function getRoleAbilities($role)
     {
         $roles = [
-            'kasir' => ['penjualan', 'riwayat_penjualan']
+            'kasir' => ['createJual', 'createBeli', 'getBarang', 'getSupplier', 'getPelanggan', 'getUserById'],
+            'admin' => ['createJual', 'createBeli', 'createUser', 'createBarang', 'createSupplier', 'createPelanggan', 'getJual', 'getBeli', 'getUser', 'getBarang', 'getSupplier', 'getPelanggan', 'patchJual', 'patchBeli', 'patchUser', 'patchBarang', 'patchSupplier', 'patchPelanggan', 'deleteJual', 'deleteBeli', 'deleteUser', 'deleteBarang', 'deleteSupplier', 'deletePelanggan', 'getSummary', 'getUserById'],
+            'manager' => ['getSummary', 'getUserById']
             // Tambahkan fungsi lain yang dapat diakses oleh peran 'kasir'
         ];
 
