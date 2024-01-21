@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (empty($_SESSION['login'])) {
+if (empty($_SESSION['login']['user_id'])) {
     header("Location: ../login/index.php");
     exit();
 }
@@ -9,7 +9,7 @@ if (empty($_SESSION['login'])) {
 // exit();
 
 include_once $_SERVER["DOCUMENT_ROOT"] . "/tokokita1/api/summary.php";
-$summary = new summary('kasir');
+$summary = new summary();
 $transactionData = $summary->getTransaction();
 $employe = $summary->bestEmploye();
 $product = $summary->bestProduct();

@@ -1,3 +1,8 @@
+<?php
+session_start();
+$_SESSION['login']['role'] = 'default'
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 

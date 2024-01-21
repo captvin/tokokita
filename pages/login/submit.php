@@ -2,7 +2,7 @@
 include_once $_SERVER["DOCUMENT_ROOT"] . "/tokokita1/api/user.php";
 if (isset($_POST)) {
 
-    $user = new user(null);
+    $user = new user();
     $username = $_POST['username'];
     $password = $_POST['password'];
 

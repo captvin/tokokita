@@ -1,6 +1,24 @@
 <?php
+session_start();
+
+if (empty($_SESSION['login']['user_id'])) {
+    header("Location: ../login/index.php");
+    exit();
+} else if ($_SESSION['login']['role'] != 'Admin') {
+    echo '<script src="../../vendors/jquery/jquery.min.js"></script>; <script>
+        $(document).ready(function(){
+            $("#roleModal").modal("show");
+        });
+    </script>';
+}
+
+if (isset($_POST['okButton'])) {
+    header("Location: ../dashboard/index.php");
+    exit();
+}
+
 include_once $_SERVER["DOCUMENT_ROOT"] . "/tokokita1/api/barang.php";
-$barang = new barang('kasir');
+$barang = new barang();
 $barangData = $barang->getAll();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -127,6 +145,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
+
+    <?php
+    include_once $_SERVER["DOCUMENT_ROOT"] . "/tokokita1/components/role.php";
+    ?>
 
     <!-- Modal Edit -->
     <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
@@ -272,7 +294,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             });
         });
-
     </script>
 
     <?php

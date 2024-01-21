@@ -5,11 +5,11 @@ class barang{
     private $mysql_conn;
     private $userRole;
 
-    public function __construct($userRole = null)
+    public function __construct()
     {
         global $mysql_conn;
         $this->mysql_conn = $mysql_conn;
-        $this->userRole = $userRole ?: 'default';
+        $this->userRole = $_SESSION['login']['role'];
     }
 
     public function getAll(){

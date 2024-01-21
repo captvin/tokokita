@@ -4,12 +4,13 @@ include_once $_SERVER["DOCUMENT_ROOT"] . "/tokokita1/db/mysql33.php";
 include_once $_SERVER["DOCUMENT_ROOT"] . "/tokokita1/middleware/ability.php";
 class penjualan{
     private $mysql_conn;
-    private $userRole = $_SESSION['login']['role'];
+    private $userRole;
 
     public function __construct()
     {
         global $mysql_conn;
         $this->mysql_conn = $mysql_conn;
+        $this->userRole = $_SESSION['login']['role'];
     }
 
     public function getAll(){

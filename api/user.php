@@ -1,4 +1,5 @@
 <?php
+// session_start();
 include_once $_SERVER["DOCUMENT_ROOT"] . "/tokokita1/db/mysql33.php";
 include_once $_SERVER["DOCUMENT_ROOT"] . "/tokokita1/middleware/ability.php";
 class user
@@ -6,11 +7,11 @@ class user
     private $mysql_conn;
     private $userRole;
 
-    public function __construct($userRole)
+    public function __construct()
     {
         global $mysql_conn;
         $this->mysql_conn = $mysql_conn;
-        $this->userRole = $userRole;
+        $this->userRole = $_SESSION['login']['role'];
     }
 
     public function getAll()
