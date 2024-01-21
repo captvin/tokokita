@@ -72,14 +72,14 @@ $product = $summary->bestProduct();
 
                     <div class="row d-flex justify-content-center align-items-center ">
                         <div class="d-block justify-content-center align-items-center">
-                            
+
                             <div>
-                            <h1 id="realtimeClock"></h1>
+                                <h1 id="realtimeClock"></h1>
                             </div>
-                            
+
                             <div>
-                            <button class="btn btn-primary">Penjualan</button>
-                            <button class="btn btn-success">Pembelian</button>
+                                <button class="btn btn-primary">Penjualan</button>
+                                <button class="btn btn-success">Pembelian</button>
                             </div>
                         </div>
                     </div>
@@ -164,6 +164,10 @@ $product = $summary->bestProduct();
                         </div>
                     </div>
 
+
+                    
+
+
                     <!-- Content Row -->
 
                     <div class="row">
@@ -205,6 +209,8 @@ $product = $summary->bestProduct();
                             </div>
                         </div>
 
+                        
+
                         <!-- Pie Chart -->
                         <div class="col-xl-4 col-lg-5">
                             <div class="card shadow mb-4">
@@ -236,6 +242,52 @@ $product = $summary->bestProduct();
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title">Laporan Rugi Laba</h5>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>ID Barang</th>
+                                                <th>Nama Barang</th>
+                                                <th>Total Penjualan</th>
+                                                <th>Total Pembelian</th>
+                                                <th>Keuntungan/Rugi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                     
+                                            $profitLossData = $summary->calculateProfitLoss();
+
+                                            foreach ($profitLossData as $data) {
+                                                $idBarang = $data['IdBarang'];
+                                                $namaBarang = $data['NamaBarang'];
+                                                $totalPenjualan = $data['totalPenjualan'];
+                                                $totalPembelian = $data['totalPembelian'];
+
+                                                $keuntunganRugi = $totalPenjualan - $totalPembelian;
+                                            ?>
+                                                <tr>
+                                                    <td><?= $idBarang ?></td>
+                                                    <td><?= $namaBarang ?></td>
+                                                    <td><?= 'Rp.' . number_format($totalPenjualan, 2) ?></td>
+                                                    <td><?= 'Rp.' . number_format($totalPembelian, 2) ?></td>
+                                                    <td><?= 'Rp.' . number_format($keuntunganRugi, 2) ?></td>
+                                                </tr>
+                                            <?php
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
             </div>
 
             <?php

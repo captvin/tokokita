@@ -50,4 +50,23 @@ class summary
             return [];
         }
     }
+
+    public function calculateProfitLoss()
+    {
+        $query = "SELECT b.IdBarang, b.NamaBarang, 
+              SUM(pj.HargaJual * pj.JumlahPenjualan) AS totalPenjualan, 
+              SUM(p.HargaBeli * p.JumlahPembelian) AS totalPembelian
+              FROM barang b
+              LEFT JOIN penjualan pj ON b.IdBarang = pj.IdBarang
+              LEFT JOIN pembelian p ON b.IdBarang = p.IdBarang
+              GROUP BY b.IdBarang";
+
+        $result = $this->mysql_conn->query($query);
+
+        if ($result->num_rows > 0) {
+            return $result->fetch_all(MYSQLI_ASSOC);
+        } else {
+            return [];
+        }
+    }
 }
