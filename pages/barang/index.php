@@ -131,6 +131,56 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
             </div>
 
+            <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Hasil Kombinasi Paket Penjualan Barang</h5>
+                </div>
+                <div class="card-body">
+                    <?php
+                    $generator = new barang(); // Gantilah dengan kelas yang sesuai
+
+                    $combinedPackages = $generator->generateCombine();
+
+                    foreach ($combinedPackages as $package) {
+                        $namaPaket = $package['namaPaket'];
+                        $arrayBarang = $package['arrayBarang'];
+                    ?>
+                        <div class="mb-3">
+                            <h6><?= $namaPaket ?></h6>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Barang ID</th>
+                                        <th>Nama Barang</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    foreach ($arrayBarang as $barangId) {
+                                        $namaBarang = $generator->getNamaBarangById($barangId); // Gantilah dengan metode yang sesuai
+                                    ?>
+                                        <tr>
+                                            <td><?= $barangId ?></td>
+                                            <td><?= $namaBarang ?></td>
+                                        </tr>
+                                    <?php
+                                    }
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php
+                    }
+                    ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
             <?php
             include_once $_SERVER["DOCUMENT_ROOT"] . "/tokokita1/components/footer.php";
             ?>
